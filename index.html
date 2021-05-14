@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/news.png" type="image/x-icon">
+    <link rel="stylesheet" href="bot/main-css.css">
+    <link rel="stylesheet" href="bot/bootstrap.min.css">  <!--Bootstrap Css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!--Font-awsome file-->
+    <link rel="stylesheet" href="bot/animate.css">  <!--Animate css-->
+    <script src="bot/require.js"></script>   <!--JQuery file-->
+    <script src="bot/bootstrap.min.js"></script>    <!--BootStrap javaScript file-->
+    <link rel="stylesheet" href="css/style.css">
+    <title>News Inshorts</title>
+</head>
+<body> 
+    <script>
+        //const url = "https://newsapi.org/v2/everything?q=tesla&from=2021-04-14&sortBy=publishedAt&apiKey=3ba52989dfeb4a308bf94972b9eb081a";
+        //const url = "https://gnews.io/api/v4/search?q=None&token=829bcc6090da6785bc99c78d1a233740&lang=hi&topic=entertainment&country=in"; 
+          const url = "https://gnews.io/api/v4/search?q=None&token=829bcc6090da6785bc99c78d1a233740&topic=breaking-news&country=in"; 
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET',url,'true');
+
+        xhr.onprogress = function(){
+            document.getElementById("NewsContainer").style.display = "none";
+            document.getElementById("spinner").style.display = "block";
+        }
+
+        xhr.onload = function(){
+            data = this.responseText;
+            var obj = JSON.parse(data);
+            var NewsObject = obj.articles;
+            var len = NewsObject.length;
+            setTimeout(function () {
+                for(var i=0;i<len;i++){
+                    let date = NewsObject[i].publishedAt;
+                    date = date.slice(0,10);
+                    date = date.replace("-", "/");
+                    date = "-"+date.replace("-","/");
+                    //console.log(date)
+                    let newsbox =`
+                    <!-- this news start -->
+                    <div class="col-lg-6 news-box">
+                        <div class="inner-div">
+                            <div class="row image-title-row">
+                                <div class="col-lg-4 img-col">
+                                    <img src="${NewsObject[i].image}" alt="NewsRelevent" class="img-collection inset-0 w-full h-full object-cover object-center">
+                                </div>
+                                <div class="col-lg-8 title-col">
+                                    <h3 class="news-titles">
+                                        ${NewsObject[i].title}
+                                        <span class="time">${date}</span>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="news-paragraph">
+                                <p class="news-desciption-para">
+                                    ${NewsObject[i].description}
+                                </p>
+                            </div>
+                            <div class="div-for-btn">
+                                <a href="${NewsObject[i].url}" style="text-decoration: none;" target="_blank"><button class="btn btn-danger read-more-btn">Read More &#8594;</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- this news over -->
+                    `;
+                    document.getElementById("NewsContainer").style.display = "flex";
+                    document.getElementById("spinner").style.display = "none";
+                    document.getElementById("update").style.display = "block";
+                    document.getElementById("NewsContainer").innerHTML += newsbox;
+                }
+            },2000);
+        }
+        
+        xhr.send();
+
+        const updation= ()=> {
+            document.getElementById("update").disabled = true;
+            document.getElementById("minispinner").style.display = "block";
+            setTimeout(function(){
+                document.getElementById("update").disabled = false;
+                document.getElementById("minispinner").style.display = "none";
+                window.location.reload();
+            },1500);
+        }
+
+
+        function showoptions(){
+            document.getElementById("setting").style.backgroundImage = "url('img/x-button.png')";
+            document.getElementById("category").style.display = "block";
+        }
+
+        function abortOptions(){
+            pixel = screen.width;
+            if(pixel<=620){
+                document.getElementById("setting").style.backgroundImage = "url('img/settings2.png')";
+            }else{
+                document.getElementById("setting").style.backgroundImage = "url('img/settings.png')";
+            }
+            document.getElementById("category").style.display = "none";  
+        }
+        
+        function readyToFetch(){
+            abortOptions();
+            document.getElementById("NewsContainer").innerHTML = " ";
+            document.getElementById("NewsContainer").style.display = "none";
+            document.getElementById("spinner").style.display = "block";
+            document.getElementById("update").style.display = "none";
+        }
+        function changeCategory(x){
+            readyToFetch();
+            if(x=='1'){newurl="https://gnews.io/api/v4/search?q=None&token=cbf58d63ba4c5d66e2fc77b2143ce80c&lang=hi&topic=entertainment&country=in"}   // bibehab832@labebx.com
+            else if(x=='2'){newurl="https://gnews.io/api/v4/search?q=None&token=cbf58d63ba4c5d66e2fc77b2143ce80c&lang=en&topic=entertainment&country=in"}
+            else if(x=='3'){newurl="https://gnews.io/api/v4/search?q=None&token=cbf58d63ba4c5d66e2fc77b2143ce80c&lang=hi&topic=sports"}
+            else if(x=='4'){newurl="https://gnews.io/api/v4/search?q=None&token=cbf58d63ba4c5d66e2fc77b2143ce80c&lang=en&topic=sports"}
+            else if(x=='5'){newurl="https://gnews.io/api/v4/search?q=None&token=cbf58d63ba4c5d66e2fc77b2143ce80c&lang=en&topic=technology"}
+            else if(x=='6'){newurl="https://gnews.io/api/v4/search?q=None&token=35625e4ff588165a445427f28bbcc8a6&lang=hi&topic=breaking-news&country=in"}  //btuyqt3cah@crepeau12.com
+            else if(x=='7'){newurl="https://gnews.io/api/v4/search?q=None&token=35625e4ff588165a445427f28bbcc8a6&lang=en&topic=world"}
+            else if(x=='8'){newurl="https://gnews.io/api/v4/search?q=None&token=35625e4ff588165a445427f28bbcc8a6&lang=en&topic=science&country=in"}
+            else if(x=='9'){newurl="https://gnews.io/api/v4/search?q=None&token=35625e4ff588165a445427f28bbcc8a6&lang=en&topic=health&country=in"}
+            else if(x=='10'){newurl="https://gnews.io/api/v4/search?q=None&token=35625e4ff588165a445427f28bbcc8a6&lang=hi&topic=nation&country=in"}
+            else{newurl="https://gnews.io/api/v4/search?q=None&token=35625e4ff588165a445427f28bbcc8a6&lang=en&topic=breaking-news&country=in" }
+            fetch(newurl).then((resp)=>{
+                console.log("hii");
+                return resp.text();
+            }).then((data)=>{
+                var obj = JSON.parse(data);
+                var NewsObject = obj.articles;
+                var len = NewsObject.length;
+                setTimeout(function () {
+                    for(var i=0;i<len;i++){
+                        let date = NewsObject[i].publishedAt;
+                        date = date.slice(0,10);
+                        date = date.replace("-", "/");
+                        date = "-"+date.replace("-","/");
+                        //console.log(date)
+                        let newsbox =`
+                        <!-- this news start -->
+                        <div class="col-lg-6 news-box">
+                            <div class="inner-div">
+                                <div class="row image-title-row">
+                                    <div class="col-lg-4 img-col">
+                                        <img src="${NewsObject[i].image}" alt="NewsRelevent" class="img-collection inset-0 w-full h-full object-cover object-center">
+                                    </div>
+                                    <div class="col-lg-8 title-col">
+                                        <h3 class="news-titles">
+                                            ${NewsObject[i].title}
+                                            <span class="time">${date}</span>
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="news-paragraph">
+                                    <p class="news-desciption-para">
+                                        ${NewsObject[i].description}
+                                    </p>
+                                </div>
+                                <div class="div-for-btn">
+                                    <a href="${NewsObject[i].url}" style="text-decoration: none;" target="_blank"><button class="btn btn-danger read-more-btn">Read More &#8594;</button></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- this news over -->
+                        `;
+                        document.getElementById("NewsContainer").style.display = "flex";
+                        document.getElementById("spinner").style.display = "none";
+                        document.getElementById("update").style.display = "block";
+                        document.getElementById("NewsContainer").innerHTML += newsbox;
+                    }
+                },2000);
+            });
+        }
+
+
+    </script>
+
+    <div class="body-div">
+        <h1 class="main-heading">
+            <span class="red">N</span>ews <span class="red">I</span>nShort
+        </h1>
+        <div class="row news-container" id="NewsContainer">
+        </div>
+        <div class="spinner" id="spinner"></div>
+        <div class="mini-spinner" id="minispinner"></div>
+        <button onclick="updation();" class="btn btn-primary updation" id="update">Check for updation</button>
+    </div>
+    <div class="fixed" onclick="showoptions()" id="setting">
+    </div>
+
+<footer class="last-foot" >
+    Powered by VipinCreations
+</footer>
+
+<div class="background-black" id="category">
+<div class="option-list">
+  <h2 class="category">
+      Select news category :
+  </h2>
+  <span class="news-options" onclick="changeCategory('1');">Entertainment <span class="green"> [Hindi] </span><span class="red">[IN]</span></span>
+  <span class="news-options" onclick="changeCategory('2');">Entertainment <span class="green"> [English] </span><span class="red">[IN]</span></span>
+  <span class="news-options" onclick="changeCategory('3');">Sports <span class="green"> [Hindi] </span><span class="red">[IN]</span></span>
+  <span class="news-options" onclick="changeCategory('4');">Sports <span class="green"> [English] </span><span class="red">[IN]</span></span>
+  <span class="news-options" onclick="changeCategory('5');">Technology<span class="green"> [English] </span><span class="red">[IN]</span></span>
+  <span class="news-options" onclick="changeCategory('6');">Breaking News <span class="green"> [Hindi] </span><span class="red">[IN]</span></span>
+  <span class="news-options" onclick="changeCategory('7');">World <span class="green"> [English] </span><span class="red">[INTERNATIONAL]</span></span>
+  <span class="news-options" onclick="changeCategory('8');">Science <span class="green"> [English] </span><span class="red">[IN]</span></span>
+  <span class="news-options" onclick="changeCategory('9');">Health <span class="green"> [English] </span><span class="red">[IN]</span></span>
+  <span class="news-options bor-bot" onclick="changeCategory('10');">Nation <span class="green"> [Hindi] </span><span class="red">[IN]</span></span>
+  <button class="btn btn-danger cancel-btn" onclick="abortOptions();">cancel</button>
+</div>
+</div>
+
+
+</body>
+</html>
